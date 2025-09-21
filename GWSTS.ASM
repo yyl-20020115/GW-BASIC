@@ -712,7 +712,7 @@ PLYNU4:
 	MOV	BX,AX		;TRANSFER TO BX FOR INDEXING
 	OR	BX,BX		;SEE IF PAUSE (NOTE # 0)
 	JZ	PLYNO4		;IF PAUSE, PASS [BX]=0
-	MOV	BX,WORD PTR NOTTAB-2[BX]	;FETCH FREQUENCY
+	MOV	BX,WORD PTR [BX+NOTTAB-2]	;FETCH FREQUENCY
 	MOV	CL,LOW 6	;CALCULATE 6-OCTAVE
 	SUB	CL,DH		;FOR # OF TIMES TO SHIFT FREQ.
 	SHR	BX,CL		;DIVIDE BY 2^(6-OCTAVE)
@@ -918,8 +918,8 @@ SOUNL4:
 	POP	BX		;FAC address
 	CMP	BYTE PTR 0[BX],LOW 221O	;Overflow?
 	JB	SOUNL5		;Brif not
-	MOV	WORD PTR -1[BX],110177O	; else
-	MOV	WORD PTR -3[BX],177400O	; force to 65535
+	MOV	WORD PTR [BX-1],110177O	; else
+	MOV	WORD PTR [BX-3],177400O	; force to 65535
 SOUNL5:
 	CALL	FRQINT		;Convert back to Integer
 	MOV	DX,BX		; in [DX]
@@ -2344,4 +2344,5 @@ ADVERR:
 
 CSEG	ENDS
 	END
-                                                                                                                              
+        
+                                                                                                                      
