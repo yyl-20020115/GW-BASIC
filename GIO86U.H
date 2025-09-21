@@ -1,6 +1,6 @@
 ; [ This translation created 12-Jan-83 by Version 4.3 ]
 
-	SUBTTL GIO86U - Device Independent I/O Constants and Macros
+	SUBTTL GIO86U.H - Device Independent I/O Constants and Macros
 
 COMMENT	*
 

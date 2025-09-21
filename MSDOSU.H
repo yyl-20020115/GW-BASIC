@@ -1,6 +1,6 @@
 ; [ This translation created 12-Jan-83 by Version 4.3 ]
 
-	SUBTTL    MSDOSU - MS-DOS Constants and Data-Structure Definitions
+	SUBTTL    MSDOSU.H - MS-DOS Constants and Data-Structure Definitions
 
 COMMENT	*
 

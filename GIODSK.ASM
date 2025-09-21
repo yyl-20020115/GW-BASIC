@@ -19,11 +19,11 @@ COPYRIGHT (C) 1982 BY MICROSOFT
         T. Corbett      Microsoft   for BASIC-86 Generalized I/O
                         Based on code written for BASCOM-86
         *
-	INCLUDE	GIO86U
+	INCLUDE	GIO86U.H
 
 CPM86=0
 
-	INCLUDE	MSDOSU
+	INCLUDE	MSDOSU.H
 
 	.SALL
 	.RADIX	10

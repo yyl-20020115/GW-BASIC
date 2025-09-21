@@ -17,7 +17,7 @@ COMMENT	*
         --------- --- ---- -- ---------
         *
 
-	INCLUDE	GIO86U
+	INCLUDE	GIO86U.H
 	.RADIX	8
 	.SALL
 

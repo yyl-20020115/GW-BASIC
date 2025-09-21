@@ -25,14 +25,14 @@ COPYRIGHT (C) 1982 BY MICROSOFT CORPORATION
 ;*                                                                      *
 ;************************************************************************
 
-	INCLUDE	GIO86U
+	INCLUDE	GIO86U.H
 	.SALL
 
 CPM86=0
 TETRA=0				;Save DS in DATSEG(defined in CS and
 				;   used by interrupt routine).
 
-	INCLUDE	MSDOSU
+	INCLUDE	MSDOSU.H
 
 
 DSEG	SEGMENT PUBLIC 'DATASG'

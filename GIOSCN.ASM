@@ -16,7 +16,7 @@ COPYRIGHT (C) 1982 BY MICROSOFT
 --------- --- ---- -- ---------
 
 	*
-	INCLUDE	GIO86U
+	INCLUDE	GIO86U.H
 	.SALL
 
 CPM86=0				;CPM86 Operating System
@@ -30,7 +30,7 @@ IBMCSR=IBMLIK			;IBM compatibile cursor control interface
 	INVLIN=SCROLT		;Invisible (function key) Line
 	FKFSRL=(SCROLT-1) AND 1	;Clear fkeys/full scroll/rewrite fkeys
 
-	INCLUDE	MSDOSU		;Operating System Constants
+	INCLUDE	MSDOSU.H		;Operating System Constants
 
 	PUBLIC	SCNDSP,SCNINI,SCNTRM
 	EXTRN	DERBFM:NEAR,INIFDB:NEAR
