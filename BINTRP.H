@@ -71,7 +71,7 @@ ENDM
 
 DERMAK  MACRO   X
         PUBLIC  DER&X
-DER&X:  MOV     DL,OFFSET ERR&X
+DER&X:  MOV     DX,OFFSET ERR&X
         DB      271O                    ; LXI B over next error
 ENDM
 ;
@@ -108,15 +108,15 @@ endm
 ; define a macro called that possibly externals S:NEAR and then calls macro n
 ;
 def_mac macro   m,n,s
-m   macro
+;m   macro
     ifndef s
         extrn s:NEAR
     endif
     purge m
     n
-endm
-?&s macro
-&endm
+;endm
+;?&s macro
+;&endm
 endm
 
 ;
@@ -149,4 +149,3 @@ R2      MACRO   RESWRD,RESDSP
 ENDM
 ;
 PAGE
-

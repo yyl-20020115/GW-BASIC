@@ -97,6 +97,10 @@ IBMCSR=IBMLIK			;IBM COMPATIBILITY for cursor
 	EXTRN	SCROUT:NEAR	; OEM supplied character output
 	EXTRN	SCRINP:NEAR	; OEM supplied screen input(read character)
 	EXTRN	CLREOL:NEAR	; OEM supplied screen clear to end of line
+;SUBROUTINE SCROL2              ; Used by insert code to move over chars in line
+;                           On entry:   AH,BH,CH=scroll parameters
+;
+	SCROL2	EQU	SCROLL	; No DBLCHR save/restore
 
 ;THE FOLLOWING IS DATA UNIQUE TO THE SCNDRV MODULE
 ;       ALL DATA IS ONE BYTE LONG UNLESS STATED OTHERWISE
@@ -2278,10 +2282,6 @@ MVCH89: POP     CX
 	XORB    CH,CH           ; No characters wrapped
 	JMP     MVCHEX          ; All done
 %
-;SUBROUTINE SCROL2              ; Used by insert code to move over chars in line
-;                           On entry:   AH,BH,CH=scroll parameters
-;
-	SCROL2	EQU	SCROLL	; No DBLCHR save/restore
 ;SUBROUTINE SCNRTL              ; Read logical terminator for physical line
 ;**                     On entry:   DL=line number
 ;**                     On exit:    AX=terminators
