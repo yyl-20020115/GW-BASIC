@@ -2,7 +2,7 @@
 
 	.RADIX  8		; To be safe
 
-CSEG	SEGMENT PUBLIC 'CODESG' 
+CSEG	SEGMENT PUBLIC 'CODE' 
 	ASSUME  CS:CSEG
 
 INCLUDE	BINTRP.H 
@@ -618,7 +618,7 @@ PUBLIC	CONSTR
 ;****** It MUST be the first label in DSEG, as it is  *******
 ;****** used by GWINIT to insert the OS control block *******
 ;************************************************************
-DSEG	SEGMENT PUBLIC 'DATASG'		
+DSEG	SEGMENT PUBLIC 'DATA'		
 	ASSUME DS:DSEG
 PUBLIC	BEGDSG
 BEGDSG	LABEL WORD
@@ -809,7 +809,7 @@ PUBLIC	FREFDB
 ;
 ; ======== Data Phase ========
 ;
-DSEG	SEGMENT PUBLIC 'DATASG'
+DSEG	SEGMENT PUBLIC 'DATA'
 	ORG	0+400O
 	RAMLOW=$		;WHERE CONSTANTS GET DEPOSITED
 	INS86	352		;INTER-SEGMENT DIRECT JUMP
@@ -995,7 +995,7 @@ DSEG	ENDS
 ;========== End of Phase ==========
 ;
 	ENDCNS=$
-DSEG	SEGMENT PUBLIC 'DATASG'		;Start the data segment
+DSEG	SEGMENT PUBLIC 'DATA'		;Start the data segment
 ;
 ;
 ;GIO86 uninitialized data definitions:
@@ -1567,4 +1567,3 @@ BRKTXT:	DB"Break"
 ;
 CSEG	ENDS
 	END
-                                       

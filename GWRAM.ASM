@@ -2,7 +2,7 @@
 
 	.RADIX  8		; To be safe
 
-CSEG	SEGMENT PUBLIC 'CODESG' 
+CSEG	SEGMENT PUBLIC 'CODE' 
 	ASSUME  CS:CSEG
 
 INCLUDE	OEM.H
@@ -46,7 +46,7 @@ CERMSG:	ACRLF			;Command line error message
 
 CSEG	ENDS			; End of code segment constants
 	PAGE	
-DSEG	SEGMENT PUBLIC 'DATASG'		; Start of data segment GW variables
+DSEG	SEGMENT PUBLIC 'DATA'		; Start of data segment GW variables
 	ASSUME DS:DSEG
 
 ;

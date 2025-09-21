@@ -12,10 +12,10 @@ COPYRIGHT (C) 1982 BY MICROSOFT
 
         *
 
-ROFFST	MACRO	NAME,SIZE	;define record macro
-	NAME=_OFFST
-	_OFFST=_OFFST+SIZE
-ENDM 
+ROFFST MACRO	NAME,SIZE		;define record macro
+	NAME   = _OFFST
+	_OFFST = _OFFST+SIZE
+ENDM
 
 
 ;ASCII character definitions
@@ -57,4 +57,3 @@ ENDM
 
 
         PAGE
-

@@ -2,96 +2,96 @@
 
 	.RADIX  8		; To be safe
 
-CSEG	SEGMENT PUBLIC 'CODESG' 
-	ASSUME  CS:CSEG
+CSEG SEGMENT PUBLIC 'CODE'
+	     ASSUME    CS:CSEG
 
-INCLUDE	OEM.H
+	     INCLUDE   OEM.H
 
-	TITLE   SCNEDT  Screen Oriented Editor for GW-BASIC
-	SUBTTL  DATA DEFINITIONS
-
-
-COMMENT	*
-        --------- --- ---- -- ---------
-        COPYRIGHT (C) 1982 BY MICROSOFT
-        --------- --- ---- -- ---------
-        *
-
-	INCLUDE	GIO86U.H
-	.RADIX	8
-	.SALL
-
-;OEM IFNDEF'S:
-MELCO=0
-HAL=0
-
-;GENERIC IFNDEF'S:
-TERMSW=0
-HLPTRP=0
-STPTRP=0
-HLPEDT=0
-SCRKEY=0
-NMPAGE=0
-IBMCSR=IBMLIK
+	     TITLE     SCNEDT  Screen Oriented Editor for GW-BASIC
+	     SUBTTL    DATA DEFINITIONS
 
 
+	     COMMENT   *
+--------- --- ---- -- ---------
+	     COPYRIGHT (C) 1982 BY MICROSOFT
+--------- --- ---- -- ---------
+*
 
-;INTERNAL ROUTINES:
+	     INCLUDE   GIO86U.H
+.RADIX 8
+.SALL
 
-	PUBLIC	PINLIN		; Program line input
-				;on exit:       BX=addr of input -1
+	;OEM IFNDEF'S:
+MELCO	= 0
+HAL		= 0
 
-	PUBLIC	INLIN		; BASIC INPUT Statements line input
-				;on exit:       BX=addr of input -1
-
-	PUBLIC	SINLIN		; BASIC INPUT Statements redo line input
-				;on exit:       BX=addr of input -1
-
-	PUBLIC	QINLIN		; BASIC INPUT Statements with output of "?" first
-				;on exit:       BX=addr of input -1
-
-	PUBLIC	SCNSEM		; BASIC INPUT statement scan for semicolon
-				;on exit:       SEMFLG flag set
-	PUBLIC	EDTBRK		; BASIC received break, reinitialize routine
-
-	PUBLIC	ERREDT		; BASIC Syntax error auto-edit on ERRLIN
-				;on exit:       Removes return and jumps to MAIN after
-				;               listing ERRLIN and positioning cursor at
-				;               start of line.
-
-	PUBLIC	EDIT		; EDIT Statement
-				;on exit:       Same as ERREDT, except takes line number
-				;               to list as argument.
-
-;       INTERN  EDITRT          ; AUTO Program line input processing
-				;on exit:       BX=addr of input(BUF)
-				;               it also puts PSW on stack with carry
-				;               set and jumps to EDENT for exit
+	;GENERIC IFNDEF'S:
+TERMSW	= 0
+HLPTRP	= 0
+STPTRP	= 0
+HLPEDT	= 0
+SCRKEY	= 0
+NMPAGE	= 0
+IBMCSR	= IBMLIK
 
 
-;EXTERNAL ROUTINES:
 
-	EXTRN	OUTDO:NEAR	; Character output(GIO86)
-	EXTRN	KEYIN:NEAR	; Key input(expands any string keys-GIOKYB)
-	EXTRN	SCNMRK:NEAR	; Mark current posn as start of line(SCNDRV)
-	EXTRN	SCNRDL:NEAR	; Read current logical line(SCNDRV)
-	EXTRN	CRDO:NEAR	; BASIC new line routine
-	EXTRN	CHRGTR:NEAR	; BASIC character scan routine
+	;INTERNAL ROUTINES:
 
-;DATA (DEFINED IN RAM MODULE)
-DSEG	SEGMENT PUBLIC 'DATASG'		
-	ASSUME DS:DSEG
-	EXTRN	F_EDPG:WORD	; Flag - =^O377 indicates program statement edit
-	EXTRN	SEMFLG:WORD	; Flag - zero indicates INPUT; statement(no crlf
-				;       at end of input line)
-	EXTRN	F_INST:WORD	; Flag - =^O377 indicates insert mode
-	EXTRN	BUF:WORD	; Buffer where line of data is returned
-				;   NOTE: assumes non-blank at BUF-1
-	EXTRN	F_EDIT:WORD	; Flag - non-zero indicates INLIN active
-	EXTRN	AUTFLG:WORD	; AUTO mode flag
-	EXTRN	CSRX:WORD	; Cursor column (1..n)
-	EXTRN	CSRY:WORD	; Cursor line (1..n)
-DSEG	ENDS
+	     PUBLIC PINLIN     	; Program line input
+	;on exit:       BX=addr of input -1
+
+	     PUBLIC INLIN      	; BASIC INPUT Statements line input
+	;on exit:       BX=addr of input -1
+
+	     PUBLIC SINLIN     	; BASIC INPUT Statements redo line input
+	;on exit:       BX=addr of input -1
+
+	     PUBLIC QINLIN     	; BASIC INPUT Statements with output of "?" first
+	;on exit:       BX=addr of input -1
+
+	     PUBLIC SCNSEM     	; BASIC INPUT statement scan for semicolon
+	;on exit:       SEMFLG flag set
+	     PUBLIC EDTBRK     	; BASIC received break, reinitialize routine
+
+	     PUBLIC ERREDT     	; BASIC Syntax error auto-edit on ERRLIN
+	;on exit:       Removes return and jumps to MAIN after
+	;               listing ERRLIN and positioning cursor at
+	;               start of line.
+
+	     PUBLIC EDIT       	; EDIT Statement
+	;on exit:       Same as ERREDT, except takes line number
+	;               to list as argument.
+
+	;       INTERN  EDITRT          ; AUTO Program line input processing
+	;on exit:       BX=addr of input(BUF)
+	;               it also puts PSW on stack with carry
+	;               set and jumps to EDENT for exit
+
+
+	;EXTERNAL ROUTINES:
+
+	     EXTRN  OUTDO:NEAR 	; Character output(GIO86)
+	     EXTRN  KEYIN:NEAR 	; Key input(expands any string keys-GIOKYB)
+	     EXTRN  SCNMRK:NEAR	; Mark current posn as start of line(SCNDRV)
+	     EXTRN  SCNRDL:NEAR	; Read current logical line(SCNDRV)
+	     EXTRN  CRDO:NEAR  	; BASIC new line routine
+	     EXTRN  CHRGTR:NEAR	; BASIC character scan routine
+
+	;DATA (DEFINED IN RAM MODULE)
+DSEG SEGMENT PUBLIC 'DATA'
+	     ASSUME DS:DSEG
+	     EXTRN  F_EDPG:WORD	; Flag - =^O377 indicates program statement edit
+	     EXTRN  SEMFLG:WORD	; Flag - zero indicates INPUT; statement(no crlf
+	;       at end of input line)
+	     EXTRN  F_INST:WORD	; Flag - =^O377 indicates insert mode
+	     EXTRN  BUF:WORD   	; Buffer where line of data is returned
+	;   NOTE: assumes non-blank at BUF-1
+	     EXTRN  F_EDIT:WORD	; Flag - non-zero indicates INLIN active
+	     EXTRN  AUTFLG:WORD	; AUTO mode flag
+	     EXTRN  CSRX:WORD  	; Cursor column (1..n)
+	     EXTRN  CSRY:WORD  	; Cursor line (1..n)
+DSEG ENDS
 ;LITERALS NEEDED ELSEWHERE
 	PUBLIC	CHRLNF		; Line feed character
 	PUBLIC	CHRRET		; Carriage return character
@@ -279,9 +279,9 @@ INCRTF:	MOV	BX,OFFSET BUF-1	; Return BUF - 1
 ;**
 EDTBRK:
 	EXTRN	SETCSR:NEAR
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	CSRTYP:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN CSRTYP:WORD
+DSEG ENDS
 	MOV	BYTE PTR CSRTYP,LOW 0D	; Indicate cursor off
 	CALL	SETCSR
 	CALL	CLRFLG		; Clear editor flags
@@ -311,9 +311,9 @@ CLRFLG:	MOV	BYTE PTR F_EDIT,LOW 0	; No longer in INLIN
 
 	EXTRN	MAIN:NEAR,LINSPC:NEAR,FNDLIN:NEAR,DEPTR:NEAR,LISPRT:NEAR
 	EXTRN	LINPRT:NEAR,FCERR:NEAR,USERR:NEAR,BUFLIN:NEAR
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	DOT:WORD,ERRFLG:WORD,ERRLIN:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN DOT:WORD,ERRFLG:WORD,ERRLIN:WORD
+DSEG ENDS
 
 ;EDIT COMMAND
 ;
@@ -374,9 +374,9 @@ INLHL0:	POP	AX		; Remove call to this routine
 	MOV	DX,WORD PTR CURLIN
 	CALL	ERRED2		; If exists,do edit on current line number
 ;ERRLIN AND CURLIN ARE DIRECT, DO EDIT ON KBUF
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	KBUF:WORD,CURLIN:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN KBUF:WORD,CURLIN:WORD
+DSEG ENDS
 	EXTRN	SCNEXT:NEAR,DEPTR:NEAR
 	CALL	DEPTR		; Remove line pointers from program
 	MOV	BX,OFFSET KBUF
@@ -460,4 +460,3 @@ OUTCH2:	CALL	OUTDO
 	RET	
 CSEG	ENDS
 	END
-                                                                  

@@ -2,136 +2,136 @@
 
 	.RADIX  8		; To be safe
 
-CSEG	SEGMENT PUBLIC 'CODESG' 
-	ASSUME  CS:CSEG
+CSEG SEGMENT PUBLIC 'CODE'
+	           ASSUME    CS:CSEG
 
-INCLUDE	OEM.H
+	           INCLUDE   OEM.H
 
-	TITLE   SCNDRV  This is the OS independent Screen Driver for GW BASIC
-	SUBTTL  DATA DEFINITIONS - Miscellaneous
+	           TITLE     SCNDRV  This is the OS independent Screen Driver for GW BASIC
+	           SUBTTL    DATA DEFINITIONS - Miscellaneous
 
-COMMENT	*
-	--------- --- ---- -- ---------
-	COPYRIGHT (C) 1982 BY MICROSOFT
-	--------- --- ---- -- ---------
+	           COMMENT   *
+--------- --- ---- -- ---------
+	           COPYRIGHT (C) 1982 BY MICROSOFT
+--------- --- ---- -- ---------
 
-	PROGRAMMER: MARC WILSON
+	PROGRAMMER:MARC      WILSON
 
-	*
-	INCLUDE	GIO86U.H
-	.SALL
-	.RADIX	8
+*
+	           INCLUDE   GIO86U.H
+.SALL
+.RADIX 8
 
-;OEM IFNDEFs
-MELCO=0
-CANON=0
+	;OEM IFNDEFs
+MELCO	= 0
+CANON	= 0
 
-;GENERIC IFNDEF'S:
-TERMSW=0
-HLPEDT=0
-NMPAGE=1			;Number of pages
-NEWCHP=1			;New change page routine
-IBMEOL=IBMLIK			;Clear to EOL for COMPATIBILITY
-IBMCSR=IBMLIK			;IBM COMPATIBILITY for cursor
+	;GENERIC IFNDEF'S:
+TERMSW	= 0
+HLPEDT	= 0
+NMPAGE	= 1                                                                  		;Number of pages
+NEWCHP	= 1                                                                  		;New change page routine
+IBMEOL	= IBMLIK                                                             		;Clear to EOL for COMPATIBILITY
+IBMCSR	= IBMLIK                                                             		;IBM COMPATIBILITY for cursor
 
-;Definition of scroll types
-; Choice of scroll type is by switch SCROLT.
-; Switches defined here are used to implement a specific SCROLT type.
-; If other scroll types are needed then additional SCROLT types should be
-;   defined here.
-	INVLIN=SCROLT		;Invisible (function key) Line
-	FKFSRL=(SCROLT-1) AND 1	;Clear fkeys/full scroll/rewrite fkeys
-
-
-;OTHER GENERIC SWITCHES(OEM SPECIFIC)
-	TXTWDO=0		;list of OEM's which have window setting capability
-
-	SUBTTL  DATA DEFINITIONS - Internal routines(with usage description)
+	;Definition of scroll types
+	; Choice of scroll type is by switch SCROLT.
+	; Switches defined here are used to implement a specific SCROLT type.
+	; If other scroll types are needed then additional SCROLT types should be
+	;   defined here.
+INVLIN	= SCROLT                                                             		;Invisible (function key) Line
+FKFSRL	= (SCROLT-1) AND 1                                                   		;Clear fkeys/full scroll/rewrite fkeys
 
 
-;Entry points
-	PUBLIC	SCNSWI		; Set CRT physical line width
-				;on entry:  AL=width, CL=height
+	;OTHER GENERIC SWITCHES(OEM SPECIFIC)
+TXTWDO	= 0                                                                  		;list of OEM's which have window setting capability
 
-	PUBLIC	SCNCLR		; Clear CRT, Refresh Function Key Display,
-				; Home Graphics and Text Cursors
-				;on entry:  none
-
-	PUBLIC	SCNLOC		; Locate cursor on physical screen(1,1 = HOME)
-				;on entry:  AH=column(x), AL=line(y)
-
-	PUBLIC	SCNOUT		; Character output at current position
-				;on entry:  AX=character
-
-	PUBLIC	SCNRDL		; Read a physical line at current position
-				;on entry:  DI=address of where to put string, CX=max count
-				;on exit:   CX=CX-number of characters read
-				;           DI=DI+number of characters read
+	       SUBTTL DATA DEFINITIONS - Internal routines(with usage description)
 
 
-	PUBLIC	SCNPOS		; Return current cursor location
-				;on exit:   DL=cursor line, DH=cursor column
+	;Entry points
+	       PUBLIC SCNSWI                                                      	; Set CRT physical line width
+	;on entry:  AL=width, CL=height
 
-	PUBLIC	SCNRDT		; Read terminator for physical line
-				;on entry:  DL=line number
-				;on exit:   AH= terminator column, AL=terminator value
-				;           Flags indicate terminator value:
-				;           CF=EOL, ZF=Linefeed
+	       PUBLIC SCNCLR                                                      	; Clear CRT, Refresh Function Key Display,
+	; Home Graphics and Text Cursors
+	;on entry:  none
 
-	PUBLIC	SCNGWI		; Read logical width of lines
-				;on exit:   AH=logical width of lines
+	       PUBLIC SCNLOC                                                      	; Locate cursor on physical screen(1,1 = HOME)
+	;on entry:  AH=column(x), AL=line(y)
 
-	PUBLIC	SCNMRK		; Mark position as current FSTPOS, LSTPOS
-				;on entry:  ZF set indicates use WDOLFT as column
-				;           ZF clear indicates use CSRX as column
+	       PUBLIC SCNOUT                                                      	; Character output at current position
+	;on entry:  AX=character
 
-	PUBLIC	SCNIPL		; Initialize - called during IPL
-
-	PUBLIC	SCNBRK		; Initialize - called when BREAK received by POLKEY
-	SUBTTL  DATA DEFINITIONS - External routines and data
+	       PUBLIC SCNRDL                                                      	; Read a physical line at current position
+	;on entry:  DI=address of where to put string, CX=max count
+	;on exit:   CX=CX-number of characters read
+	;           DI=DI+number of characters read
 
 
+	       PUBLIC SCNPOS                                                      	; Return current cursor location
+	;on exit:   DL=cursor line, DH=cursor column
 
-;EXTERNAL ROUTINES
-	EXTRN	SCROLL:NEAR	; OEM supplied SCROLL routine
-	EXTRN	SCROUT:NEAR	; OEM supplied character output
-	EXTRN	SCRINP:NEAR	; OEM supplied screen input(read character)
-	EXTRN	CLREOL:NEAR	; OEM supplied screen clear to end of line
-;SUBROUTINE SCROL2              ; Used by insert code to move over chars in line
-;                           On entry:   AH,BH,CH=scroll parameters
-;
-	SCROL2	EQU	SCROLL	; No DBLCHR save/restore
+	       PUBLIC SCNRDT                                                      	; Read terminator for physical line
+	;on entry:  DL=line number
+	;on exit:   AH= terminator column, AL=terminator value
+	;           Flags indicate terminator value:
+	;           CF=EOL, ZF=Linefeed
 
-;THE FOLLOWING IS DATA UNIQUE TO THE SCNDRV MODULE
-;       ALL DATA IS ONE BYTE LONG UNLESS STATED OTHERWISE
-DSEG	SEGMENT PUBLIC 'DATASG'		
-	ASSUME DS:DSEG
-	EXTRN	LINCNT:WORD	; Number of lines
-	EXTRN	CRTWID:WORD	; Characters per line
-	EXTRN	WDOTOP:WORD	; Top line in window(1-[LINCNT])
-	EXTRN	WDOBOT:WORD	; Bottom line in window([WDOTOP]-[LINCNT])
-	EXTRN	WDOLFT:WORD	; Leftmost column in window(1-[CRTWID])
-	EXTRN	WDORGT:WORD	; Rightmost column plus one([WDOLFT]-[LINCNT])
-	EXTRN	LINLEN:WORD	; Line max width(1 to CRTWID)
-	EXTRN	LINTTB:WORD	; Line terminator table((# lines * 2) bytes long)
-				; Two items per entry:
-				;   Terminator, last column
-	EXTRN	TRMCUR:WORD	; Address of current terminator entry(2 bytes)
-	EXTRN	FSTLIN:WORD	; Line number saved by SCNSTM call
-	EXTRN	FSTCOL:WORD	; Column saved as above and decreases to WDOLFT
-	EXTRN	LSTLIN:WORD	; Line number saved by SCNSTM and grows as the
-				;   logical line grows.
-	EXTRN	LSTCOL:WORD	; Column saved as above which grows as the logical
-				;   line grows(always reflects last col on LSTLIN).
-	EXTRN	F_CRET:WORD	; Zero indicates last character output was CR
-	EXTRN	CSRY:WORD	; Current line(1-[LINCNT])
-	EXTRN	CSRX:WORD	; Current column(1-[CRTWID])
-	EXTRN	KEYSW:WORD	; ^O377=Function Keys displayed on bottom line
+	       PUBLIC SCNGWI                                                      	; Read logical width of lines
+	;on exit:   AH=logical width of lines
 
-;THE FOLLOWING DATA IS ACCESSED BY SCNDRV BUT SET ELSEWHERE
-	EXTRN	F_EDIT:WORD	; Set to non-zero by INLIN when editing
-	EXTRN	F_INST:WORD	; Set to non-zero by INLIN for insert mode
-DSEG	ENDS
+	       PUBLIC SCNMRK                                                      	; Mark position as current FSTPOS, LSTPOS
+	;on entry:  ZF set indicates use WDOLFT as column
+	;           ZF clear indicates use CSRX as column
+
+	       PUBLIC SCNIPL                                                      	; Initialize - called during IPL
+
+	       PUBLIC SCNBRK                                                      	; Initialize - called when BREAK received by POLKEY
+	       SUBTTL DATA DEFINITIONS - External routines and data
+
+
+
+	;EXTERNAL ROUTINES
+	       EXTRN  SCROLL:NEAR                                                 	; OEM supplied SCROLL routine
+	       EXTRN  SCROUT:NEAR                                                 	; OEM supplied character output
+	       EXTRN  SCRINP:NEAR                                                 	; OEM supplied screen input(read character)
+	       EXTRN  CLREOL:NEAR                                                 	; OEM supplied screen clear to end of line
+	;SUBROUTINE SCROL2              ; Used by insert code to move over chars in line
+	;                           On entry:   AH,BH,CH=scroll parameters
+	;
+	SCROL2 EQU    SCROLL                                                      	; No DBLCHR save/restore
+
+	;THE FOLLOWING IS DATA UNIQUE TO THE SCNDRV MODULE
+	;       ALL DATA IS ONE BYTE LONG UNLESS STATED OTHERWISE
+DSEG SEGMENT PUBLIC 'DATA'
+	     ASSUME DS:DSEG
+	     EXTRN  LINCNT:WORD	; Number of lines
+	     EXTRN  CRTWID:WORD	; Characters per line
+	     EXTRN  WDOTOP:WORD	; Top line in window(1-[LINCNT])
+	     EXTRN  WDOBOT:WORD	; Bottom line in window([WDOTOP]-[LINCNT])
+	     EXTRN  WDOLFT:WORD	; Leftmost column in window(1-[CRTWID])
+	     EXTRN  WDORGT:WORD	; Rightmost column plus one([WDOLFT]-[LINCNT])
+	     EXTRN  LINLEN:WORD	; Line max width(1 to CRTWID)
+	     EXTRN  LINTTB:WORD	; Line terminator table((# lines * 2) bytes long)
+	; Two items per entry:
+	;   Terminator, last column
+	     EXTRN  TRMCUR:WORD	; Address of current terminator entry(2 bytes)
+	     EXTRN  FSTLIN:WORD	; Line number saved by SCNSTM call
+	     EXTRN  FSTCOL:WORD	; Column saved as above and decreases to WDOLFT
+	     EXTRN  LSTLIN:WORD	; Line number saved by SCNSTM and grows as the
+	;   logical line grows.
+	     EXTRN  LSTCOL:WORD	; Column saved as above which grows as the logical
+	;   line grows(always reflects last col on LSTLIN).
+	     EXTRN  F_CRET:WORD	; Zero indicates last character output was CR
+	     EXTRN  CSRY:WORD  	; Current line(1-[LINCNT])
+	     EXTRN  CSRX:WORD  	; Current column(1-[CRTWID])
+	     EXTRN  KEYSW:WORD 	; ^O377=Function Keys displayed on bottom line
+
+	;THE FOLLOWING DATA IS ACCESSED BY SCNDRV BUT SET ELSEWHERE
+	     EXTRN  F_EDIT:WORD	; Set to non-zero by INLIN when editing
+	     EXTRN  F_INST:WORD	; Set to non-zero by INLIN for insert mode
+DSEG ENDS
 	SUBTTL  DATA DEFINITIONS - Literals
 
 
@@ -184,9 +184,9 @@ PUBLIC	SCNSIZ
 ;SUBROUTINE SCNIPL():           ; Initialize
 ;**
 SCNIPL:
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	ESCFLG:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN ESCFLG:WORD
+DSEG ENDS
 	MOV	BYTE PTR ESCFLG,LOW 0
 	RET	
 ;** END SUBROUTINE SCNIPL
@@ -336,9 +336,9 @@ SCNOUT:	PUSH	DX
 	JB	SCNOTX		; No char to output
 	CALL	CHWRAP		; Do wrap for char in AX, return DX=posn for output
 	EXTRN	SETCSR:NEAR
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	CSRTYP:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN CSRTYP:WORD
+DSEG ENDS
 	MOV	BYTE PTR CSRTYP,LOW 0D	; Set next cursor type to off
 	CALL	SETCSR		; Insure that the cursor is off
 
@@ -814,9 +814,9 @@ PLINI2:	CALL	CLREOL		; Clear to end of line from (DH,DL)
 ;USES   - AX,BX,CX
 ;
 	EXTRN	FKYADV:NEAR,KEYDSP:NEAR,FKYFMT:NEAR
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	KEYSW:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN KEYSW:WORD
+DSEG ENDS
 LABELK:	PUSH	AX
 	PUSH	BX
 	PUSH	CX
@@ -1047,9 +1047,9 @@ FUNTAB:	DW	OFFSET CTLIGN	; ^@  -  Ignore
 ;**                                     if CF=1 then AX is undefined
 CTLDSP:
 	CALL	SCNPOS		; DH=column, DL=row
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	CSRTYP:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN CSRTYP:WORD
+DSEG ENDS
 	EXTRN	SETCSR:NEAR
 	MOV	BYTE PTR CSRTYP,LOW 0D	; Set for off cursor
 	CALL	SETCSR		; Ensure that the cursor is off
@@ -1987,9 +1987,9 @@ LINSRT:	XOR	BYTE PTR F_INST,LOW 377O	;Toggle insert flag
 ;**                                 CH=number of spaces to open(1 or 2)
 ;**                     On exit:    (DH,DL)=same posn(DL value can change)
 ;**
-DSEG	SEGMENT PUBLIC 'DATASG'
-	EXTRN	BUF:WORD
-DSEG	ENDS
+DSEG SEGMENT PUBLIC 'DATA'
+	     EXTRN BUF:WORD
+DSEG ENDS
 MKRMCH:	PUSH	SI
 	PUSH	AX
 	PUSH	CX
@@ -2463,4 +2463,3 @@ ANYES:	CLC
 	RET	
 CSEG	ENDS
 	END
-                                                                             
