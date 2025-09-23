@@ -10,9 +10,9 @@ un_def  MACRO   RESWRD
 ENDM
 
 T       MACRO   RESWRD
-        QQ=QQ+1
+        QQ = QQ + 1
         PUBLIC  $&RESWRD
-        $&RESWRD=QQ
+        $&RESWRD = QQ
 ENDM
 
 Q       MACRO   RESWRD
@@ -42,8 +42,8 @@ QF      MACRO   RESWRD
         $F=0
   IRPC  XX,<RESWRD>
    IF   $F
-        $Q="&XX&"
-        DB      "&XX&"
+        $Q = "&XX&"
+        DB   "&XX&"
    ENDIF        
    IFE  $F-1
         .XLIST
@@ -63,18 +63,17 @@ ENDM
 R       MACRO   RESWRD
         extrn   RESWRD:NEAR
         DW      RESWRD
-        QQ=QQ+1
+        QQ = QQ + 1
         PUBLIC  $&RESWRD
-        $&RESWRD=QQ
+        $&RESWRD = QQ
 ENDM
 
 R2      MACRO   RESWRD,RESDSP
         extrn   RESDSP:NEAR
         DW      RESDSP
-        QQ=QQ+1
+        QQ = QQ + 1
         PUBLIC  $&RESWRD
         $&RESWRD=QQ
 ENDM
 ;
 PAGE
-

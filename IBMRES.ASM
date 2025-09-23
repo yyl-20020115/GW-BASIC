@@ -133,7 +133,7 @@ STMDSP:				;MARKS START OF STATEMENT LIST
 	R	LOCATE
 
 PUBLIC	NUMCMD
-	NUMCMD=QQ-$END+1
+	NUMCMD = QQ - $END + 1
 
 ;
 ; TOKENS
@@ -143,7 +143,7 @@ PUBLIC	NUMCMD
 ;QQ MUST BE SET SO TOKENS START AT RIGHT PLACE
 ;
 
-	QQ=QQ+1
+	QQ = QQ + 1
 
 	T	TO
 	T	THEN
@@ -986,4 +986,3 @@ EVALNF:	POP	CX		;Get rid of the return address.
 
 CSEG	ENDS
 	END
-                                          

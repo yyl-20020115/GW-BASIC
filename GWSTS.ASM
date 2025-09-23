@@ -1921,8 +1921,11 @@ PUTCH2:
 ;         [BX]=new text pointer.  All other regs preserved.
 ;
 PRSDAT:
+	;NOTICE:
+	MOV 	SI, OFFSET EQULTK
+	PUSH	SI		;PUSH MINUTK ADDR
 	CALL	SYNCHR
-	DB	OFFSET EQULTK	;Must be DATE$ = string
+	;DB	OFFSET EQULTK	;Must be DATE$ = string
 	CALL	FRMEVL
 	PUSH	BX		;Save Text pointer
 	CALL	FRESTR
@@ -2156,8 +2159,11 @@ TIMEF:
 ;         [BX]=new text pointer.  All other regs preserved.
 ;
 PRSTIM:
+	;NOTICE
+	MOV 	SI,OFFSET EQULTK
+	PUSH 	SI
 	CALL	SYNCHR
-	DB	OFFSET EQULTK	;Must be TIME$ = string
+	;DB	OFFSET EQULTK	;Must be TIME$ = string
 	CALL	FRMEVL
 	PUSH	BX		;Save Text pointer
 	CALL	FRESTR

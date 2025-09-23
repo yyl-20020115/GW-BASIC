@@ -1210,10 +1210,9 @@ DSEG	ENDS
 ;translator can't handle JMPI ,adr yet
 	PUSH	WORD PTR CPMEXT+2	;put segment adr on stack
 	PUSH	WORD PTR CPMEXT	;put offset on stack
-dumy  PROC    FAR
-	RET			;intra-segment return
-dumy  ENDP
+;dumy  PROC  FAR
+	RETF			;intra-segment return
+;dumy  ENDP
 
 CSEG	ENDS
 	END
-                                                                                       

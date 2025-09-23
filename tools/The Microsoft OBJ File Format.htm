@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="unsafe-url">
+<link href="/css/bootstrap.min.css" rel="stylesheet" />
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<title>The Microsoft OBJ File Format</title>
+</head>
+<body>
+<div class="container-fluid p-3 bg-light d-none d-md-block">
+	<a href="/index.htm"><img src="/images/logos/ffi-horiz-dark.svg"></a>
+</div>
+<nav class="navbar bg-body-tertiary d-print-none" style="background-color: #336699 !important;">
+	<div class="container-fluid">
+		<form action="/search/search.htm" class="d-flex d-none d-md-block" method="get" role="search">
+			<div class="input-group">
+				<input class="form-control" name="q" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-light" type="submit">&#x1f50d;</button>
+			</div>
+		</form>
+		<a class="navbar-brand d-md-none" href="/index.htm">
+			<img src="/images/logos/ffi-horiz-light.svg" alt="Bootstrap" style="height:1.5rem;">
+		</a>
+		<span class="navbar-text text-white-50">
+<a class="text-white text-decoration-none" href="/index.htm">FileFormat.Info</a>&nbsp;&raquo;&nbsp;<a class="text-white text-decoration-none" href="/format/index.htm">Specific&#xa0;Formats</a>&nbsp;&raquo;&nbsp;<a class="text-white text-decoration-none" href="/format/ms-obj/index.htm">ms-obj</a>		</span>
+	</div>
+</nav>
+<div class="container">
+	<div class="row-fluid">
+ 		<div class="span12 boxshadow">
+
+<div class="row justify-content-md-center my-3">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6975096118196151"
+     crossorigin="anonymous"></script>
+<!-- FileFormatInfo 2023-12 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-6975096118196151"
+     data-ad-slot="7200653382"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<h1>The Microsoft OBJ File Format</h1>
+<hr />
+<h2>Original Documentation</h2>
+<pre>
+Most of the description was taken from the Microsoft Product Support
+Services Application Note SS0288. The .OBJ files are binary files used
+by compilers to link in precompiled code. They contain symbol and relocation
+information necessary to link the data and code contained in the files. The
+.OBJ files have no common header which makes a validation or identification
+guesswork at best. The .OBJ files consist of at least one record, each of the
+following type :
+
+OFFSET              Count TYPE   Description
+0000h                   1 byte   Record type (see below)
+0001h                   1 word   Record length
+								 =&quot;LEN&quot;
+0003h               &quot;LEN&quot; byte   Record data
+0003h                   1 byte   Checksum or 0
+ +&quot;LEN&quot;                          (that much for validation)
+
+The maximum size of the entire record (unless otherwise noted for specific
+record types) is 1024 bytes.
+
+For LINK386, the format is determined by the least-significant bit
+of the Record Type field. An odd Record Type indicates that certain
+numeric fields within the record contain 32-bit values; an even
+Record Type indicates that those fields contain 16-bit values. The
+affected fields are described with each record. Note that this
+principle does not govern the Use32/Use16 segment attribute (which
+is set in the ACBP byte of SEGDEF records); it simply specifies the
+size of certain numeric fields within the record. It is possible to
+use 16-bit OMF records to generate 32-bit segments, or vice versa.
+
+LINK ignores the value of the checksum byte, but some other utilities may
+not. Microsoft's Quick languages write a 0 byte instead of computing a checksum.
+
+The contents of each record are determined by the record type, but
+certain subfields appear frequently enough to be explained separately.
+The format of such fields is below.
+
+Names :
+
+A name string is encoded as an 8-bit unsigned count followed by a
+string of count characters. The character set is usually some ASCII
+subset. A null name is specified by a single byte of 0 (indicating a
+string of length 0).
+
+Indexed References :
+
+Certain items are ordered by occurrence and are referenced by index.
+The first occurrence of the item has index number 1. Index fields may
+contain 0 (indicating that they are not present) or values from 1
+through 7FFF. The index number field in an object record can be either
+1 or 2 bytes long. If the number is in the range 0-7FH, the high-order
+bit (bit 7) is 0 and the low-order bits contain the index number, so
+the field is only 1 byte long. If the index number is in the range 80-
+7FFFH, the field is 2 bytes long. The
+
+Type Indexes :
+
+Type Index fields occupy 1 or 2 bytes and occur in PUBDEF, LPUBDEF,
+COMDEF, LCOMDEF, EXTDEF, and LEXTDEF records. They are encoded as
+described above for indexed references, but the interpretation of the
+values stored is governed by whether the module has the &quot;new&quot; or &quot;old&quot;
+object module format.
+
+&quot;Old&quot; versions of the OMF (indicated by lack of a COMENT record with
+comment class A1), have Type Index fields that contain indexes into
+previously seen TYPDEF records. This format is no longer produced by
+Microsoft products and is ignored by LINK if it is present. See the
+section of this document on TYPDEF records for details on how this was
+used.
+
+&quot;New&quot; versions of the OMF (indicated by the presence of a COMENT
+record with comment class A1), have Type Index fields that contain
+proprietary CodeView information. For more information on CodeView,
+see Appendix 1.
+
+Ordered Collections :
+
+Certain records and record groups are ordered so that the records may
+be referred to with indexes (the format of indexes is described in the
+&quot;Indexed References&quot; section of this document). The same format is
+used whether an index refers to names, logical segments, or other
+items.
+
+The overall ordering is obtained from the order of the records within
+the file together with the ordering of repeated fields within these
+records. Such ordered collections are referenced by index, counting
+from 1 (index 0 indicates unknown or not specified).
+
+For example, there may be many LNAMES records within a module, and
+each of those records may contain many names. The names are indexed
+starting at 1 for the first name in the first LNAMES record
+encountered while reading the file, 2 for the second name in the first
+record, and so forth, with the highest index for the last name in the
+last LNAMES record encountered.
+
+The ordered collections are:
+
+   Names       Ordered by occurrence of LNAMES records and
+			   names within each. Referenced as a name
+			   index.
+
+   Logical     Ordered by occurrence of SEGDEF records in
+   Segments    file. Referenced as a segment index.
+
+   Groups      Ordered by occurrence of GRPDEF records in
+			   file. Referenced as a group index.
+
+   External    Ordered by occurrence of EXTDEF, COMDEF,
+   Symbols     LEXTDEF, and LCOMDEF records and symbols
+			   within each. Referenced as an external name
+			   index (in FIXUP subrecords).
+
+
+Numeric 2- and 4-Byte Fields :
+
+Certain records, notably SEGDEF, PUBDEF, LPUBDEF, LINNUM, LEDATA,
+LIDATA, FIXUPP, and MODEND, contain size, offset, and displacement
+values that may be 32-bit quantities for Use32 segments. The encoding
+is as follows:
+
+ - When the least-significant bit of the record type byte is set (that
+   is, the record type is an odd number), the numeric fields are 4
+   bytes.
+
+ - When the least-significant bit of the record type byte is clear,
+   the fields occupy 2 bytes. The values are zero-extended when
+   applied to Use32 segments.
+
+  NOTE: See the description of SEGDEF records in this document for an
+  explanation of Use16/Use32 segments.
+
+
+The general record ordering is not mandatory, but should be (for link speed)
+like this :
+
+THEADR or LHEADR record :
+
+  Records Processed by LINK Pass 1 :
+  All records may occur in any order but must stand before the link pass
+  separator, if it is present.
+
+   COMENT records identifying object format and extensions
+   COMENT records other than Link Pass Separator comment
+   LNAMES or LLNAMES records providing ordered name list
+   SEGDEF records providing ordered list of program segments
+   GRPDEF records providing ordered list of logical segments
+   TYPDEF records (obsolete)
+   ALIAS records
+   PUBDEF records locating and naming public symbols
+   LPUBDEF records locating and naming private symbols
+   COMDEF, LCOMDEF, EXTDEF, LEXTDEF, and CEXTDEF records
+
+Link Pass Separator (Optional) :
+
+COMENT class A2 record indicating that Pass 1 of the linker is
+complete. When this record is encountered, LINK stops reading the
+object file in Pass 1; no records after this comment are read in Pass
+1. All the records listed above must come before this COMENT record.
+
+For greater linking speed, all LIDATA, LEDATA, FIXUPP, BAKPAT, INCDEF,
+and LINNUM records should come after the A2 COMENT record, but this is
+not required. In LINK, Pass 2 begins again at the start of the object
+module, so these records are processed in Pass 2 no matter where they
+are placed in the object module.
+
+Records Ignored by LINK Pass 1 and Processed by LINK Pass 2 :
+
+The following records may come before or after the Link Pass
+Separator:
+
+   LIDATA, LEDATA, or COMDAT records followed by applicable FIXUPP
+   records
+   FIXUPP records containing only THREAD subrecords
+   BAKPAT and NBKPAT FIXUPP records
+   COMENT class A0, subrecord type 03 (INCDEF) records containing
+   incremental compilation information for FIXUPP and LINNUM records
+   LINNUM and LINSYM records providing line number and program code or
+   data association
+
+Terminator :
+
+   MODEND record indicating end of module with optional start address
+
+Details of each record (form and content) follow below.
+Conflicts between various OMFs that overlap in their use of record
+types or fields are marked.
+
+Below is a combined list of record types defined by the Intel 8086 OMF
+specification and record types added after that specification was
+finished. Titles in square brackets ([]) indicate record types that
+have been implemented and that are described in this document. Titles
+not in square brackets indicate record types that have not been
+implemented and are followed by a paragraph of description from the
+Intel specification.
+
+For unimplemented record types, a subtle distinction is made between
+records that LINK ignores and those for which LINK generates an
+&quot;illegal object format&quot; error condition.
+
+Records Currently Defined
+
+   6EH     RHEADR   R-Module Header Record
+					This record serves to identify a module that has
+					been processed (output) by LINK-86/LOCATE-86. It
+					also specifies the module attributes and gives
+					information on memory usage and need. This record
+					type is ignored by Microsoft LINK.
+
+   70H     REGINT   Register Initialization Record
+					This record provides information about the 8086
+					register/register-pairs: CS and IP, SS and SP, DS
+					and ES. The purpose of this information is for a
+					loader to set the necessary registers for
+					initiation of execution. This record type is
+					ignored by Microsoft LINK.
+
+   72H     REDATA   Relocatable Enumerated Data Record
+					This record provides contiguous data from which a
+					portion of an 8086 memory image may eventually be
+					constructed. The data may be loaded directly by
+					an 8086 loader, with perhaps some base fixups.
+					The record may also be called a Load-Time
+					Locatable (LTL) Enumerated Data Record. This
+					record type is ignored by Microsoft LINK.
+
+   74H     RIDATA   Relocatable Iterated Data Record
+					This record provides contiguous data from which a
+					portion of an 8086 memory image may eventually be
+					constructed. The data may be loaded directly by
+					an 8086 loader, but data bytes within the record
+					may require expansion. The record may also be
+					called a Load-Time Locatable (LTL) Iterated Data
+					Record. This record type is ignored by Microsoft
+					LINK.
+
+   76H     OVLDEF   Overlay Definition Record
+					This record provides the overlay's name, its
+					location in the object file, and its attributes.
+					A loader may use this record to locate the data
+					records of the overlay in the object file. This
+					record type is ignored by Microsoft LINK.
+
+   78H     ENDREC   End Record
+					This record is used to denote the end of a set of
+					records, such as a block or an overlay. This
+					record type is ignored by Microsoft LINK.
+
+   7AH     BLKDEF   Block Definition Record
+					This record provides information about blocks
+					that were defined in the source program input to
+					the translator that produced the module. A BLKDEF
+					record will be generated for every procedure and
+					for every block that contains variables. This
+					information is used to aid debugging programs.
+					This record type is ignored by Microsoft LINK.
+
+   7CH     BLKEND   Block End Record
+					This record, together with the BLKDEF record,
+					provides information about the scope of variables
+					in the source program. Each BLKDEF record must be
+					followed by a BLKEND record. The order of the
+					BLKDEF, debug symbol records, and BLKEND records
+					should reflect the order of declaration in the
+					source module. This record type is ignored by
+					Microsoft LINK.
+
+   7EH     DEBSYM   Debug Symbols Record
+					This record provides information about all
+					local symbols, including stack and based symbols.
+					The purpose of this information is to aid debug-
+					ging programs. This record type is ignored by
+					Microsoft LINK.
+
+   [80H]   [THEADR] [Translator Header Record]
+
+   [82H]   [LHEADR] [Library Module Header Record]
+
+   84H     PEDATA   Physical Enumerated Data Record
+					This record provides contiguous data,
+					from which a portion of an 8086 memory
+					image may be constructed. The data
+					belongs to the &quot;unnamed absolute segment&quot;
+					in that it has been assigned absolute
+					8086 memory addresses and has been
+					divorced from all logical segment
+					information. This record type is ignored
+					by Microsoft LINK.
+
+   86H     PIDATA   Physical Iterated Data Record
+					This record provides contiguous data,
+					from which a portion of an 8086 memory
+					image may be constructed. It allows
+					initialization of data segments and
+					provides a mechanism to reduce the size
+					of object modules when there is repeated
+					data to be used to initialize a memory
+					image. The data belongs to the &quot;unnamed
+					absolute segment.&quot; This record type is
+					ignored by Microsoft LINK.
+
+   [88H]   [COMENT] [Comment Record]
+
+   [8AH/8BH] [MODEND] [Module End Record]
+
+   [8CH]   [EXTDEF] [External Names Definition Record]
+
+   [8EH]   [TYPDEF] [Type Definition Record]
+
+   [90H/91H] [PUBDEF] [Public Names Definition Record]
+
+   92H     LOCSYM   Local Symbols Record
+					This record provides information about
+					symbols that were used in the source
+					program input to the translator that
+					produced the module. This information is
+					used to aid debugging programs. This
+					record has a format identical to the
+					PUBDEF record. This record type is
+					ignored by Microsoft LINK.
+
+   [94H/95H] [LINNUM] [Line Numbers Record]
+
+   [96H]   [LNAMES] [List of Names Record]
+
+   [98H/99H] [SEGDEF] [Segment Definition Record]
+
+   [9AH]   [GRPDEF] [Group Definition Record]
+
+   [9CH/9DH] [FIXUPP] [Fixup Record]
+
+   9EH     (none)   Unnamed record
+					This record number was the only even
+					number not defined by the original Intel
+					specification. Apparently it was never
+					used.  This record type is ignored by
+					Microsoft LINK.
+
+   [A0H/A1H] [LEDATA] [Logical Enumerated Data Record]
+
+   [A2H/A3H] [LIDATA] [Logical Iterated Data Record]
+
+   A4H     LIBHED   Library Header Record
+					This record is the first record in a library
+					file. It immediately precedes the modules
+					(if any) in the library. Following the
+					modules are three more records in the
+					following order: LIBNAM, LIBLOC, and LIBDIC.
+					This record type is ignored by Microsoft
+					LINK.
+
+   A6H     LIBNAM   Library Module Names Record
+					This record lists the names of all the
+					modules in the library. The names are listed
+					in the same sequence as the modules appear
+					in the library. This record type is ignored
+					by Microsoft LINK.
+
+   A8H     LIBLOC   Library Module Locations Record
+					This record provides the relative location,
+					within the library file, of the first byte
+					of the first record (either a THEADR or
+					LHEADR or RHEADR record) of each module in
+					the library. The order of the locations
+					corresponds to the order of the modules in
+					the library. This record type is ignored by
+					Microsoft LINK.
+
+   AAH     LIBDIC   Library Dictionary Record
+					This record gives all the names of public
+					symbols within the library. The public names
+					are separated into groups; all names in the
+					nth group are defined in the nth module of
+					the library. This record type is ignored by
+					Microsoft LINK.
+
+   [B0H]   [COMDEF] [Communal Names Definition Record]
+
+   [B2H/B3H] [BAKPAT] [Backpatch Record]
+
+   [B4H]   [LEXTDEF] [Local External Names Definition Record]
+
+   [B6H/B7H] [LPUBDEF] [Local Public Names Definition Record]
+
+   [B8H]   [LCOMDEF] [Local Communal Names Definition Record]
+
+   BAH/BBH COMFIX   Communal Fixup Record
+					Microsoft doesn't support this never-
+					implemented IBM extension. This record type
+					generates an error when it is encountered by
+					Microsoft LINK.
+
+   BCH     CEXTDEF  COMDAT External Names Definition Record
+
+   C0H     SELDEF   Selector Definition Record
+					Microsoft doesn't support this never-
+					implemented IBM extension. This record type
+					generates an error when it is encountered by
+					Microsoft LINK.
+
+   [C2H/C3] [COMDAT] [Initialized Communal Data Record]
+
+   [C4H/C5H] [LINSYM] [Symbol Line Numbers Record]
+
+   [C6H]   [ALIAS]  [Alias Definition Record]
+
+   [C8H/C9H] [NBKPAT] [Named Backpatch Record]
+
+   [CAH]   [LLNAMES] [Local Logical Names Definition Record]
+
+   [F0H]            [Library Header Record]
+					Although this is not actually an OMF record
+					type, the presence of a record with F0H as
+					the first byte indicates that the module is
+					a Microsoft library. The format of a library
+					file is given in Appendix 2.
+
+   [F1H]            [Library End Record]
+
+
+80H THEADR--TRANSLATOR HEADER RECORD
+
+The THEADR record contains the name of the object module. This name
+identifies an object module within an object library or in messages
+produced by the linker.
+
+OFFSET              Count TYPE   Description
+0000h                   1 byte   ID=80h
+0001h                   1 byte   Record length
+								 =&quot;LEN&quot;
+0002h               &quot;LEN&quot; char   Name
+0002h                   1 byte   Checksum
++&quot;LEN&quot;
+
+
+82H LHEADR--LIBRARY MODULE HEADER RECORD
+
+This record is very similar to the THEADR record. It is used to
+indicate the name of a module within a library file (which has an
+internal organization different from that of an object module).
+This record type was defined in the original Intel specification with
+the same format but with a different purpose, so its use for libraries
+should be considered a Microsoft extension.
+
+OFFSET              Count TYPE   Description
+0000h                   1 byte   ID=82h
+0001h                   1 byte   Record length
+								 =&quot;LEN&quot;
+0002h               &quot;LEN&quot; char   Name
+0002h                   1 byte   Checksum
++&quot;LEN&quot;
+
+EXTENSION:OBJ,OBP,OBW,LIB
+OCCURENCES:PC
+PROGRAMS:MS Link, TLink, OBJDUMP
+REFERENCE:****
+</pre>
+<hr />
+<p>This information is from <a href="/mirror/corion/index.htm">Corion.net</a> and is used with <a href="/mirror/corion/permission.htm">permission</a>.</p>
+
+<p><a href="internal.htm">More Resources</a></p>
+
+		</div><!--/span-->
+	</div><!--/row-->
+	<footer>
+	<p class="text-center text-body-tertiary"><small><a class="text-reset" href="/about/tos.htm">Terms of Service</a> | <a class="text-reset" href="/about/privacy.htm">Privacy Policy</a> | <a class="text-reset" href="/about/feedback.htm">Contact Info</a></small></p>
+	</footer>
+</div><!--/container-->
+
+</body>
+</html>
